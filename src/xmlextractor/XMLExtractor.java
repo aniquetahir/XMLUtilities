@@ -1,10 +1,13 @@
 package xmlextractor;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import javax.xml.parsers.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import xmlextractor.cj.CJArchiver;
 /**
  *
  * @author AniqueTahir
@@ -15,6 +18,11 @@ public class XMLExtractor {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+        CJArchiver cja = new CJArchiver("test");
+        try{
+            cja.extractProducts("test");
+        }catch(Exception e){}
         File xmlFile = null;
         ArrayList<String> tags;
         
@@ -62,5 +70,8 @@ public class XMLExtractor {
         }
         return tags;
     }
+
+    
+    
     
 }
