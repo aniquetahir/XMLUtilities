@@ -76,6 +76,7 @@ public class CJArchiver {
             Document doc = dbuilder.parse(new InputSource(new StringReader(xml)));
             Node requiredNode = doc.getFirstChild().getFirstChild();
             NodeList nList = requiredNode.getChildNodes();
+            ArrayList<Product> productList = new ArrayList();
             for(int i=0;i<nList.getLength();i++){
                 Node pNode = nList.item(i);
                 NodeList attrList = pNode.getChildNodes();
@@ -83,14 +84,116 @@ public class CJArchiver {
                 for(int j=0;j<attrList.getLength();j++){
                     Node attrNode = attrList.item(j);
                     
-                    if(attrNode.getNodeName().equals("ad-id")){
-                    
-                    }else if(attrNode.getNodeName().equals("ad-id")){
-                    
-                    }else if(attrNode.getNodeName().equals("ad-id")){
-                    
+                    switch (attrNode.getNodeName()) {
+                        case "ad-id":
+                            p.ad_id = attrNode.getNodeValue();
+                            break;
+                        case "advertiser-id":
+                            p.advertiser_id = attrNode.getNodeValue();
+                            break;
+                        case "advertiser-name":
+                            p.advertiser_name = attrNode.getNodeValue();
+                            break;
+                        case "advertiser-category":
+                            p.advertiser_category = attrNode.getNodeValue();
+                            break;
+                        case "buy-url":
+                            p.buy_url = attrNode.getNodeValue();
+                            break;
+                        case "catalog-id":
+                            p.catalog_id = attrNode.getNodeValue();
+                            break;
+                        case "currency":
+                            p.currency = attrNode.getNodeValue();
+                            break;
+                        case "description":
+                            p.description = attrNode.getNodeValue();
+                            break;
+                        case "image-url":
+                            p.image_url = attrNode.getNodeValue();
+                            break;
+                        case "in-stock":
+                            p.in_stock = attrNode.getNodeValue();
+                            break;
+                        case "isbn":
+                            p.isbn = attrNode.getNodeValue();
+                            break;
+                        case "manufacturer-name":
+                            p.manufacturer_name= attrNode.getNodeValue();
+                            break;
+                        case "manufacturer-sku":
+                            p.manufacturer_sku= attrNode.getNodeValue();
+                            break;
+                        case "name":
+                            p.name = attrNode.getNodeValue();
+                            break;
+                        case "price":
+                            p.price= attrNode.getNodeValue();
+                            break;
+                        case "retail-price":
+                            p.retail_price= attrNode.getNodeValue();
+                            break;
+                        case "sale-price":
+                            p.sale_price= attrNode.getNodeValue();
+                            break;
+                        case "sku":
+                            p.sku= attrNode.getNodeValue();
+                            break;
+                        case "upc":
+                            p.upc= attrNode.getNodeValue();
+                            break;
+                        case "product_status":
+                            p.product_status= attrNode.getNodeValue();
+                            break;
                     }
                 }
+                productList.add(p);
+            }
+            
+            PreparedStatement psInsertProducts = con.prepareStatement("insert into"
+                    + " gameservice.wsdata("
+                    +"ad-id,"
+                    +"advertiser-id," 
+                    +"advertiser-name,"
+                    +"advertiser-category,"
+                    +"buy-url,"
+                    +"catalog-id," 
+                    +"currency," 
+                    +"description,"  
+                    +"image-url," 
+                    +"in_stock,"  
+                    +"isbn," 
+                    +"manufacturer_name,"
+                    +"manufacturer_sku," 
+                    +"name," 
+                    +"price,"
+                    +"retail_price," 
+                    +"sale_price," 
+                    +"sku,"
+                    +"upc," 
+                    +"product_status) "
+                    + "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1) "
+                    + "on duplicate key update product_status=1");
+            for(Product p:productList){
+                psInsertProducts.setInt(1, Integer.parseInt(p.ad_id));
+                psInsertProducts.setInt(2, Integer.parseInt(p.advertiser_id));
+                psInsertProducts.setString(3, p.advertiser_name);
+                psInsertProducts.setString(4, p.advertiser_category);
+                psInsertProducts.setString(5, p.buy_url);
+                psInsertProducts.setString(6, p.catalog_id);
+                psInsertProducts.setString(7, p.currency);
+                psInsertProducts.setString(8, p.description);
+                psInsertProducts.setString(9, p.image_url);
+                psInsertProducts.setBoolean(10, p.in_stock.equals("true")?true:false);
+                psInsertProducts.setString(11, p.isbn);
+                psInsertProducts.setString(12, p.manufacturer_name);
+                psInsertProducts.setString(13, p.manufacturer_sku);
+                psInsertProducts.setString(14, p.name);
+                psInsertProducts.setFloat(15, Float.parseFloat(p.price));
+                psInsertProducts.setFloat(16, Float.parseFloat(p.retail_price));
+                psInsertProducts.setFloat(17, Float.parseFloat(p.sale_price));
+                psInsertProducts.setString(18, p.sku);
+                psInsertProducts.setInt(19, Integer.parseInt(p.upc));
             }
             
             System.out.println(requiredNode.getNodeName());
